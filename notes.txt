@@ -1,0 +1,197 @@
+Spice Project
+
+über nuget package manager runtimecompilation installieren und dann in startup.cs als service adden
+
+jede methode in einem controller ist eine "Action" !!! JEde Action-Methode hat einen korrespondierende View
+
+in shared _layout.cshtml ist die master page für die App
+
+area hinzufügen -> data und models können gelöscht werden. wird sonst zu unübersichtlich
+Home controller und home view müssen jetzt in customer area verschoben werden
+im homecontroller muss jetzt die Area hinzugefügt werden [Area("Customer")]
+_viewimports und _viewstart muss auch in die area/views kopiert werden damit taghelpers und die layout page verwendet werden kann
+jetzt in _viewStart  den Pfad zum Layout ändern 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+--> muss nur in den eigenen Areas gemacht werden. Die Area Identity ist eine Razor Class Libary und ist default gesetzt- wird später bearbeitet
+
+now Add Database
+database connection string ist in appsettings.json, da userAuth beim erstellen des Projekts ausgewählt wurde, ist die string schon gesetzt. Evtl den Namen etwas kürzen
+migrations werden jetzt gebraucht. da wir code first arbeiten werden wir die Datenbank nicht direkt bearbeiten
+
+servername im MS SQL Server Management Studio prüfen: ggf im appsettings.json ändern
+nun die migration: in tools Nuget package manager console --> update-database, default tables werden automatisch created weil userAuth
+
+unterschiede von 3.0 zu 3.1:
+in 3.1 
+in
+public void ConfigureServices(IServiceCollection services)
+{
+services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+}
+
+options => options.SignIn.RequireConfirmedAccount = true  --> fragt nach registrierung nach email confirmation --> kann in dem Fall entfernt werden
+
+----------------
+die Navbar dunkel machen:
+in _Layout.cshtml in navbar-dark und bg-dark ändern, in den Nav items text-dark entfernen
+login und register sind in Area Identity, da die aber Razor Class Libary muss scaffolding hinzugefügt werden. rechtsklick auf Identity und scaffolding hinzufügen 
+-> alle Datei hinzufügen, wenn man weiß was man tut, kann man auch nur benötigte Dateien hinzufügen. Dann link zu _layout hinzufügen und Datenbankkontext hinzufügen
+bei ~/Identity/Pages/Account/Manage  in _Layout.cshtml and _ManageNav-cshtml  sind die Layout pages welche für Identity benutzt werden.
+zum ändern des styling des register and login button gehen wir in _LoginPartial.cshtml
+---
+Adding dropdown to NavBar:
+inside <ul> 
+<li class="nav-item dropdown text-white-50">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Content Mangament
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                <a class="dropdown-item">Category</a>
+                                <a class="dropdown-item">Subcategory</a>
+                                <a class="dropdown-item">MenuItem</a>
+                                <a class="dropdown-item">Coupons</a>
+                                <a class="dropdown-item">Users</a>
+
+                            </div>
+--------------------------
+Category hinzufügen:
+neues Model erstellen: add -> class
+add props Id and Name, make Name[Required]
+Id ist Primary key, kann mit [Key] gekennzeichnet werden, muss aber nicht, da Id automatisch als PK erkannt wird
+jetzt muss Category zur DB geadded werden -> in ApplicationDbContext:
+public DbSet<Category> Category { get; set; }
+dann console: add-migration addCategoryToDatabase
+check mirgation to errors, dann
+update-database
+jetzt prüfen in Datenbank ob geklappt hat
+-----
+jetzt entsprechenden Controller für Category hinzufügen:
+~/admin/controllers -> add new controller
+im controller Area adden [Area("Admin")]
+damit der Link jetzt funktioniert müssem im _Layout View die TagHelpers eingebunden werden :<a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin" >Category</a>
+ein klick auf Category ruft dann die ActionMethod "IActionResult" im CategoryController auf
+jetzt müssen die Daten aus der DB gelesen werden. Dazu ist im startup.cs die ApplicationDbContext eingebunden die den Connection string enthält und abgerufen werden kann.
+also wird in CategoryController nun mit DependencyInjection gearbeitet:
+  private readonly ApplicationDbContext _db;
+        public CategoryController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+im Controller wird nun der View returned. dazu wird im der Complette DB inhalt aus Category mitgegeben.
+in ASP.net core wird empfohlen mit async zu arbeiten. Daher:
+    public async Task<IActionResult> Index()
+        {
+            return View(await _db.Category.ToListAsync());
+        }
+--------
+jetzt die View erstellen: (index.cshtml)
+entsprechende Views müssen immer in einem Ordner liegen, der so heißt wie der entsprechende Controller. Also in Views Ordner "Category" erstellen und View "Index" anlegen.
+in der View muss dann das Model eingebunden werden. hier muss man sich überlegen was wir vom Controller bekommen. In unserem Fall kommt von der GETaction aus dem Controller
+eine Liste, also in der View --> @model IEnumerbale<Category>
+---------------------------------
+IMAGES ARE HERE: https://github.com/bhrugen/Spice/tree/master/Spice/wwwroot/images
+---------------------------------
+jetzt soll der Hintergrund der App statisch für alle views festgelegt werden. Dafür in /wwwroot/css die site.css bearbeiten und Klassen angelen:
+
+.search-background{
+    background: url('../images/dust_scratches.png')
+}
+
+.backgroundWhite{
+    background-color:white;
+    padding:30px;
+    border-radius:10px;
+    margin-bottom:30px;
+}
+
+.backgroundWhiteBorder {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border:1px solid #ddd;
+}
+
+.backgroundWhiteBorder10Padding {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+---------------------------
+erstellen der Tabelle in Index.cshtml:
+zwei col-6
+Tabelle wird variable gefüllt mit HMTL-Helpers, mit if wird geprüft ob es einträge in Category gibt und dann mit foreach alle einträge im Model ausgelesen.
+----------
+in rechte spalte button für create erstellen, zusätzlich fontawesome einbinden:
+<a asp-action="Create" class="btn btn-info"><i class="fas fa-plus"></i>  &nbsp; Create New</a> 
+als PARTIAL VIEW: unter shared eine neue View erstellen, auf Partial setzen, code einfügen und an der Stelle von die View gebraucht wird <partial name="_CreateButtonPartial"/>einfügen
+-----------
+get action für create erstellen (braucht in diesem Fall nicht async zu sein!)
+im categoryController:
+public IActionResult Create()
+        {
+            return View();
+        }
+neue View für Create erstellen:
+entweder über Explorer ../admin/views neue view erstellen oder im controller rechtsklick auf methode und add view (wird dann automatisch an der richtigen stelle angelegt)
+Model einbinden @model Category,
+Heading einbinden class="text-info"
+form einbinden als post damit zur create action geschickt werden kann
+asp-validation-summary prüft, ob properties required sind. falls ja, dann gibts ne errormeldung das feld pflicht ist
+im label asp-for"Name" zieht den Namen aus dem @model Category form mit buttons zu ende bauen
+------------
+da create and back to list an vielen stellen verwendet wird, sollte eine partial view erstellen
+partial view im shared erstellen. mit _ und capital letter starten. Inhalt einkopieren und in view die partial view einbinden <partial name="_PartialView"/>
+---
+dann post-action für create bauen:
+alle post action müssen [HttpPost] und [ValidateAntiForgeryToken] sein,
+post action methode muss async sein. mit Tast IActionResult Create(Category category) wird der Name aus der Create view von method post empfangen.
+dann muss überprüft werden ob der modelstate valid ist. wenn ja category adden und speichern. wenn erfolgreich soll die view zurückgegeben werden. Hier wird aber eigentlich
+eine action-methode aufgerufen die dann die view returned --> RedirectToAction("INdex") um tippfehler zu vermeiden gibt es die nameof-Methode also RedirectToAction(nameof(Index))
+Sonst return to view
+---
+nun die buttons in der create view EDIT DELETE DETAILS hinzufügen (Partial view)
+da bei den buttons immer die Id des property verknüpft sein muss, übergeben wir in der partial view ein int @model int und geben jedem button mit asp-route-Id="@Model" die Id mit
+das was nach asp-route-HIER steht wird übergeben.
+jetzt in der index view einbauen. es muss neben der partial view auch die Id(den int, siehe oben) über model="item.Id" übergeben werden.
+---
+Action Method für edit bauen. da die ID übergeben werden muss. deshalb brauchen wir get and post action methods
+für get methods brauchen wir keine annotations wie http oder AntiForgeryToken
+async Task erstellen vom Typ IActionResult Edit(int? id), prüfen ob id== null wenn ja return notFound() 
+sonst:
+jetzt id finden und category zuweisen und dann returnen
+------
+jetzt die view erstellen -> rechtsklick auf method und view erstellen
+in der partial view @model einfügen hier wieder ein int (die Id), als asp-route-id nur das Model übergeben. in edit view die partial einfügen und model="Model.Id" übergeben
+---
+jetzt post action für edit bauen
+da post->wieder HttpPost and AntiForgeryToken
+Category in der Edit-Method empfangen. prüfen ob Modelstate is valid, wenn ja: _db.Update(category) und savechanges -> return RedirectToAction(nameof(Index))
+............
+HINWEIS: 
+asp-validation-summary="ModelOnly" in der Create-View ist FrontEntValidation 
+.........
+jetzt get action method für Delete:
+gleiche methode wie für edit. kopieren und einfügen-> edit in delete ändern
+---
+delete view ersellen:
+rechtsklick auf methode, view erstellen, inhalt aus edit kopieren und anpassen. Angezeigter name in der Delete view änderen. dazu im Model "Category.cs" vor Name [Display(Name="Category Name")] setzen
+----
+Nun die post action für delete:
+HttpPost und ValidateAntiForgeryToken, da es die methode delete bereits gibt muss der methodenName geändert werden. zusätzlich muss der noch der ActionName("Delete") geändert werden
+dann-> category mit findasync(id) beschreiben, prüden ob category==null, wenn ja return to View(), 
+sonst: remove category and saveChanges -> return RedirectToAction(nameof(Index))
+
+
+Chapter 6: Subcategoty
+
+
+
+
+
+
+
+
