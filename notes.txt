@@ -188,6 +188,80 @@ sonst: remove category and saveChanges -> return RedirectToAction(nameof(Index))
 
 Chapter 6: Subcategoty
 
+create new class subcategory in Models, needs props id and name
+Add SubCategory to ApplicationDbContext
+add-migration über console
+update-database
+
+------------
+Add Subcategory Controller -> hier die area hinzufügen
+ApplicationDbContext einfügen DatabaseObjekt
+Get Action einfügen:
+
+MIT EAGER LOADING
+public async Task<IActionResult> Index()
+        {
+            var subCategories = await _db.SubCategory.Include(s=>s.Category).ToListAsync();
+            return View(subCategories);
+        }
+--> mit include wird der CategorieName mit eingebungen (über FK)
+
+
+in _layout im pulldown menü der <a> Tag muss ergänzt werden:  <a class="dropdown-item" asp-action="Index" asp-controller="SubCategory" asp-area="Admin">Category>Subcategory</a>
+
+-----
+SubCatgory view muss erstellt werden
+jetzt muss ein viewmodel(class) erstellt werden der die daten aus beiden Tabellen (Category and SubCategory) verbindet um Sie im view anzuzeigen
+
+"Viewmodel can be treated as a model for a specific view"
+
+public class SubCategoryAndCategoryViewModel
+    {
+        public IEnumerable<Category> CategoryList { get; set; }
+        public SubCategory SubCategory { get; set; }
+        public List<string> SubCategoryList { get; set; }
+        public string StatusMassage { get; set; }
+    }
+}
+---
+GET- Create Methode:
+mit der get methode werden nun ein objekt vom typ des Viewmodels erzeugt und die einzelnen Props zugewiesen
+----
+Extensionmethoden hinzufügen: neuer Ordner anlegen,
+zwei Klassen anlegen--> 
+IEnumerableExtension:
+müssen statisch sein, vom Typ IEnumerable, zwei werte werden mitgegeben: this IEnumerable items and selected Value
+{
+Siehe video 92 (zu komplziert zu schreiben :)
+}
+
+und:
+ReflectionExtension
+------------------
+jetzt die Create View in subcategory erstellen: siehe code!
+-----
+im subcategorycontroler die Post Create methode erstellen:
+[HttpPost]
+[ValidateAntiForgeryToken]
+code abchecken
+
+HINT Video95: für die StatusMessage sollte man [Tempdata] verwenden. Dazu gibt es bereits eine partial view vom MS-Team --> ../Areas/Identity/Pages/Account/Manage/_StatusMessage
+------
+dynamische Tabelle in Existing subcategories wird mit JavaScript eingebunden --> SIEHE VIDEO 97
+--------
+
+GET Edit METHODE für SubCategory:
+von get create kopieren und anpassen--> übergabe von nullable id , prüfen ob id null, wenn ja -> notFound(), sonst SubCategoryAndCategoryViewModel erstellen und Properties initialisieren,
+unterschied hier: SubCategory = subCategory!
+-- 
+View erzeugen -> siehe code
+-----
+Post Create erzeugen:
+
+
+
+
+
 
 
 
