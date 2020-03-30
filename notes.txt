@@ -259,6 +259,24 @@ View erzeugen -> siehe code
 Post Create erzeugen:
 
 
+Ab viedeo 108:
+MENUITEM
+[BindProperty] als Artibut 
+MenuItemViewModel als prop einbinden
+--> damit hat der Controller dieses Attribut mit eingebunden. So kann die die Property direkt genutzt werden und muss nicht als Argument returned werden.
+----
+GET CREATE:
+hier muss kein Async genutzt werden, da wir ohnehin nichts damit machen,
+MenuItemVM muss jetzt noch im Construktor initialisiert werden
+
+-> view erzeugen:
+@model Spice.Models.ViewModels.MenuItemViewModel einbinden
+
+jetzt siehe code für das Input formular..  WICHTIG: hier muss enctype="multipart/form-data" gesetzt werden da sonst nur der Dateiname, aber nicht die Datei selbst hochgeladen wird.
+rest wie im code zu sehen
+um die TextArea in eine RichTextArea umzubauen muss 3rdPartyApplication verwendet werden --> hier wird Tiny eingesetzt, muss Account erstellt werden und API KEY und Script section generiert werden
+
+
 
 
 
