@@ -277,8 +277,28 @@ rest wie im code zu sehen
 um die TextArea in eine RichTextArea umzubauen muss 3rdPartyApplication verwendet werden --> hier wird Tiny eingesetzt, muss Account erstellt werden und API KEY und Script section generiert werden
 
 
+----
+CHAPTER 8
+COUPON ab Video 119:
 
+hier werden die Images in die Datenbank geladen daher muss als Prop byte genommen werden
+bei den Menuitems wurden die bilder auf den server geladen, daher musste hier string genommen werden.
 
+wenn alle props gesetzt sind-> Model coupon in ApplicationDbContext einfügen und migrieren
+
+---
+Add CouponController
+Area festlegen, dependency injection für ApplicationDbContext und return View(siehe code) einbauen, View con Category Index kopieren und anpassen
+--
+create view erstellen (von Category kopieren und anpassen) --> dropdowns macht man am besten mit Enums!!!
+---
+create method im controller erstellen:
+WICHTIG wenn daten in der DB gespeichert werden sollen, muss die Prop immer ein byte[] sein!!!!
+rest siehe code!
+------------
+Chapter 9
+Landing Page:
+ViewModel erstellen -> hier werden die Properties erzeugt, die auf der seite angezeigt werden sollen. Also MenuItem, Category und Coupon
 
 
 
