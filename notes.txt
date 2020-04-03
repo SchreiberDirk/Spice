@@ -299,6 +299,70 @@ rest siehe code!
 Chapter 9
 Landing Page:
 ViewModel erstellen -> hier werden die Properties erzeugt, die auf der seite angezeigt werden sollen. Also MenuItem, Category und Coupon
+hier kommt jQuery zum Einsatz. Für Details am besten Code angucken
+----
+Chapter 10:
+Fiels zu Netusers Table hinzufügen, dazu neue Klasse ApplicationUser : IdentityUser erstellen
+Fiels auch in Register.cshtml.cs (pagemodel) hinzufügen
+danach add-migration und update-database
+--
+danach die View an das bestehende design anpassen --> siehe code
+---
+Rollen mit DI hinzufügen.
+jetzt OnPostAsync anpassen, denn hier werden die standard fields beschrieben
+if(ModelState.isVali) hier muss der objekttyp auf klasse ApplicationUser  geändert werden. Dann die felder adden.
+dann abfrage ob die Rolle existiert. wenn nicht dann anlegen.
+Email kram auskommentieren
+sign in
+---
+WICHTIG: in startup.cs muss noch die IdentityRole hinzugefügt werden: 
+
+services.AddDefaultIdentity<IdentityUser>()  -->  services.AddIdentity<IdentityUser, IdentityRole>()
+.AddTokenProviders für vergessene Passwörter
+
+im browser wird die app jetzt abkacken, dafür in im projekt ordner"Services" erstellen und Klasse EmailSender erstellen und IEmailSender erben lassen
+und Interface implementieren. dann in startup --> services.AddSingleton<IEmailSender, EmailSender>();
+--
+jetzt UserController erstellen:
+mit Di zugriff aud DB
+
+in indexMethode rausfinden welcher Rolle der angemeldete User hat. Dann return alle user bis auf den der angemeldet ist.. geht mit claims identity
+---
+view erzeugen, aus category index kopieren und tabelle anpassen
+in _Layout einbinden.
+------
+Chapter 11 Shopping cart:
+
+wir brauchen mehrere Items: menuitem, userId und count. es soll möglich sein, dass die artikel überlängeren Zeitraum im cart sind.
+Dazu muss ein Model erstellt werden, diese items zur datenbank hinzugefügt werden müssen.
+
+im Controller Get DetailsMethod erstellen --> siehe code : mit Authorize werden nur eingeloggte und authorisierte user akzeptiertt
+
+dann view erstellen. von (ich glaube) admin details view kopieren und anpassen. alle felder bis auf count sind readonly. farbe der Felder in css ändern (sollen weiß sein)
+
+dann Post Methode erstellen: [Authorize][HttpPost][ValidateAntiForgeryToken]
+brauchen session damit das Icon im Menubar angepasst werden kann. Wenn Session eingebaut, muss Session noch in MiddleWare eingebaut werden. Sonst kommt es zum error wenn die app
+läuft und auf addToCart geklickt wird --> in StartUp.Cs:
+in configure service -> siehe code!
+in configure: app.UseSession();
+----
+damit cart in Menubar auch angezeigt wird müssen mehrere Stellen geändert werden.
+zunächst im login: über DI ApplicationDbContext hinzufügen
+dann in OnPostAsync: if ModelState.IsValid user über eingegebene Email Identifizieren und Liste mit shoppingcartItems generieren
+dann liste in Session einbinden.
+
+jetzt muss beim Ausloggen die Session wieder auf null gesetzt werden, also auf Logout code behind und "HttpContext.Session.SetInt32("ssCartCount", 0);" einfügen
+
+jetzt muss die session noch im Customer.homecontroller in der Index Methode gesetzt werden damit der cart immer den richtigen wert hat
+
+jetzt muss noch in der _Layout Page die session empfangen und eingebungen werden:
+dazu namespace @using Microsoft.AspNetCore.Http einbinden, @inject IHttpContextAccessor HttpContextAccessor 
+an der code stelle wo der cart ist: if abfrage ob @if (HttpContextAccessor.HttpContext.Session.GetInt32("ssCartCount") != null), dann anzeigen sonst {0}
+
+
+
+
+
 
 
 
