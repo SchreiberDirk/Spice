@@ -359,6 +359,45 @@ jetzt muss noch in der _Layout Page die session empfangen und eingebungen werden
 dazu namespace @using Microsoft.AspNetCore.Http einbinden, @inject IHttpContextAccessor HttpContextAccessor 
 an der code stelle wo der cart ist: if abfrage ob @if (HttpContextAccessor.HttpContext.Session.GetInt32("ssCartCount") != null), dann anzeigen sonst {0}
 
+CHAPTER 12:
+---------------
+order header --> important information about order: when was placed, pickup time, coupon, order total, payment status, userId who placed the order
+order details --> records of what was ordered
+
+classen anlegen und props festlegen dann migration adden und DB updaten
+..
+
+um die View anzulegen brauchen wir eine Kombination(viewmodel) aus shoppingCart und orderheader
+Neues viewmodel OrderDetailsCart anlegen
+auch wenn nicht alle prop von OrderHeader gebraucht werden, sollte man immer komlpette models in viewmodels verwenden! Weil, wenn man änderungen im Model machen, kann
+man sicher sein, dass alle Änderungen auch im viewmodel verfügbar sind
+---
+jetzt cartController hinzufügen --> unter customers 
+database objekt über DI adden
+für details siehe code oder video 165...zu viel zum schreiben
+--
+jetzt view ersellen -> siehe code, hier passieren ein paar ganz wilde sachen ;-)
+
+jetzt im CartController die AddCoupon Methode implementieren damit der Click in der indexView auch funktioniert
+removeCoupon implementieren
+dann actions für plus minus und remove einbauen
+dynamik für remove and apply coupon wird über JS eingebaut
+---
+jetzt wird die Methode für ordersummary bebaut. dazu die index get view kopieren und anpassen: OrderTotal, Pickupname, phonenumber und pickuptime zuweisen
+...
+jetzt summary view bauen
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
