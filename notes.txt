@@ -385,7 +385,9 @@ dynamik für remove and apply coupon wird über JS eingebaut
 ---
 jetzt wird die Methode für ordersummary bebaut. dazu die index get view kopieren und anpassen: OrderTotal, Pickupname, phonenumber und pickuptime zuweisen
 ...
-jetzt summary view bauen
+jetzt summary view bauen: siehe code!
+
+jquery timepicker einbinden
 
 
 
