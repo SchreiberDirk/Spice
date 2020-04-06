@@ -415,8 +415,15 @@ ApplicationDbContext per DI
 neuen viewmodel erstellen --> OderDetailsViewModel
 rest siehe code oder video.
 
-partial view "_IndividualOrderDetails" erstellen und anpassen, in die customer view einbauen
+partial view "_IndividualOrderDetails" erstellen und anpassen, in die customer view einbauen  --> order confirmation page
 
+---
+jetzt order history erstellen:
+im OrderController neue actionmethod für order history erstellen. remove() kann kopiert und angepasst werden
+
+dann view erzeugen: im controller wir eine Liste der Klasse OrderDetailsViewModel an die view übergeben, daher muss in der view als Model ein IEnumerable eingebunden werden:
+@model IEnumerable<Spice.Models.ViewModels.OrderDetailsViewModel>
+view anpassen, siehe code. dann im _Layout nav-item hinzufügen und mit If UserRolle abfragen
 
 
 
