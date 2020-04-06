@@ -406,6 +406,18 @@ in startup.cs: services.Configure<StripeSettings>(Configuration.GetSection("Stri
 jetzt in Configure() StripeConfiguration einbauen
 -----
 nun die Stripe UI in summery konsumieren ..
+---
+
+CHAPTER 13 - Manage Order
+--
+Neuen Controller in customer erstellen --> OrderController --> Area Definieren wie immer bei Controllern
+ApplicationDbContext per DI 
+neuen viewmodel erstellen --> OderDetailsViewModel
+rest siehe code oder video.
+
+partial view "_IndividualOrderDetails" erstellen und anpassen, in die customer view einbauen
+
+
 
 
 
