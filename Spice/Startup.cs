@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Spice.Services;
+using Spice.Utility;
+using Stripe;
 
 namespace Spice
 {
@@ -35,6 +37,8 @@ namespace Spice
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
             services.AddSingleton<IEmailSender, EmailSender>();
 
@@ -74,6 +78,9 @@ namespace Spice
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            //this should be for DotNet Core 3.x but not working...  StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 
             app.UseAuthentication();
             app.UseAuthorization();

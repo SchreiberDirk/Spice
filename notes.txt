@@ -387,7 +387,25 @@ jetzt wird die Methode für ordersummary bebaut. dazu die index get view kopiere
 ...
 jetzt summary view bauen: siehe code!
 
-jquery timepicker einbinden
+jquery datepicker einbinden --> https://jqueryui.com/download/
+datepicker einbinden --> https://cdnjs.com/libraries/jquery-timepicker
+date and time relations mit JS programmiernen. Dazu siehe code.
+danach alters fpr die einzelnen pick up details einbauen 
+--- 
+jetzt wird die post action methode für summary gebaut.
+
+!!!WICHTIG:
+OrderDetailCart muss übergeben werden! --> da wir dieses Objekt jedoch bereits als [BindPropery] eingebunden haben brauchen wir das nicht zu machen und können direkt
+darauf zugreifen!!!
+für details siehe code!
+---
+stripe einbinden:
+SecretKey und PublishableKey in appsettings.json in einem neuen Stripe block einbauen
+unter Utility neue klasse StripeSettings erzeugen, beide key als prop einbauen
+in startup.cs: services.Configure<StripeSettings>(Configuration.GetSection("Stripe")); hier wird die daten aus appsetting.json empfangen
+jetzt in Configure() StripeConfiguration einbauen
+-----
+nun die Stripe UI in summery konsumieren ..
 
 
 
