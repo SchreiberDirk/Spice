@@ -9,6 +9,7 @@ namespace Spice.Utility
     public static class SD
     {
         public const string DefaultFoodImage = "default_food.png";
+
         public const string ManagerUser = "Manager";
         public const string KitchenUser = "Kitchen";
         public const string FrontDeskUser = "FrontDesk";
@@ -27,9 +28,7 @@ namespace Spice.Utility
         public const string PaymentStatusApproved = "Approved";
         public const string PaymentStatusRejected = "Rejected";
 
-
-
-
+        
 
 
 
