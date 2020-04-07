@@ -1,4 +1,5 @@
-﻿@model Spice.Models.ViewModels.OrderListViewModel
+﻿@model Spice.Models.ViewModels.OrderListViewModel 
+@using Spice.Utility
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +10,7 @@
 <div class="border backgroundWhite">
     <div class="row">
         <div class="col-6">
-            <h2 class="text-info">Category List</h2>
+            <h2 class="text-info">Order List</h2>
         </div>
         <div class="col-6 text-right">
             <partial name="_CreateButtonPartial" />
@@ -40,8 +41,8 @@
                         Total Items
                     </th>
                     <th></th>
-                    
-                    
+
+
                 </tr>
                 @foreach (var item in Model.Orders)
                 {
@@ -68,13 +69,21 @@
                             <button type="submit" class="btn btn-success anchorDetail" data-id="@item.OrderHeader.Id" data-toggle="modal">
                                 <i class="fa fa-list-alt"></i>&nbsp; Details
                             </button>
+                            @if (item.OrderHeader.Status == SD.StatusSubmitted || item.OrderHeader.Status == SD.StatusInProcess || item.OrderHeader.Status == SD.StatusCompleted || item.OrderHeader.Status == SD.StatusReady)
+                            {
+                                <button type="button" class="btn btn-info btnOrderStatus" data-id="@item.OrderHeader.Id" data-toggle="modal">
+                                    <i class="far fa-clock"></i>&nbsp; Status
+                                </button>
+                            }
+
                         </td>
+                    
 
                     </tr>
                 }
             </table>
-            <div page-model="@Model.PagingInfo" page-classes-enabled="true" page-class="btn border" 
-                 page-class-normal="btn btn-light" page-class-selected="btn btn-info active" 
+            <div page-model="@Model.PagingInfo" page-classes-enabled="true" page-class="btn border"
+                 page-class-normal="btn btn-light" page-class-selected="btn btn-info active"
                  class="btn-group float-right">
             </div>
             <br />
@@ -104,33 +113,33 @@
 
 @section scripts
 {
-<script>
-   
-    var PostBackURL = '/Customer/Order/GetOrderDetails';
+    <script>
 
-    $(function () {
-        $(".anchorDetail").click(function () {
+        var PostBackURL = '/Customer/Order/GetOrderDetails';
 
-            var $buttonClicked = $(this);
-            var id = $buttonClicked.attr('data-id');
+        $(function () {
+            $(".anchorDetail").click(function () {
 
-            $.ajax({
-                type: "GET",
-                url: PostBackURL,
-                contentType: "application/json; charset=utf-8",
-                data: { "Id": id },
-                cache: false,
-                datatype: "json",
-                success: function (data) {
-                    $('#myModalContent').html(data);
-                    $('#myModal').modal('show');
-                },
-                error: function () {
-                    alert("Dynamic content load failed");
-                }
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: PostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    cache: false,
+                    datatype: "json",
+                    success: function (data) {
+                        $('#myModalContent').html(data);
+                        $('#myModal').modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed");
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 
 }
