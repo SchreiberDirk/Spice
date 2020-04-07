@@ -424,6 +424,13 @@ im OrderController neue actionmethod für order history erstellen. remove() kann
 dann view erzeugen: im controller wir eine Liste der Klasse OrderDetailsViewModel an die view übergeben, daher muss in der view als Model ein IEnumerable eingebunden werden:
 @model IEnumerable<Spice.Models.ViewModels.OrderDetailsViewModel>
 view anpassen, siehe code. dann im _Layout nav-item hinzufügen und mit If UserRolle abfragen
+--
+Pagination für OrderHistory:
+Jetzt PAgeLinkTAgHElper erstellen, dazu neuen Ordner "TagHelpers" erstellen.
+rest siehe code...
+im OrderController muss auch die OrderHistory MEthode angepasst werden,dafür auch code angucken
+
+
 
 
 

@@ -83,7 +83,7 @@
                             <h6 class="my-0">Promo Code</h6>
                             <small>@Model.OrderHeader.CouponCode</small>
                         </div>
-                        <span class="text-success">@(Model.OrderHeader.OrderTotalOriginal - Model.OrderHeader.OrderTotal)</span>
+                        <span class="text-success">@(Math.Round(Model.OrderHeader.OrderTotalOriginal - Model.OrderHeader.OrderTotal,2))</span>
                     </li>
                 }
                 <li class="list-group-item d-flex justify-content-between bg-light">
